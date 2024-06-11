@@ -91,5 +91,10 @@
             <artifactId>org.wso2.carbon.identity.organization.management.application</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
+            <artifactId>org.wso2.carbon.identity.extension.mgt</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

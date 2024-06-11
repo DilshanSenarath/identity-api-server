@@ -32,6 +32,7 @@ import org.apache.cxf.jaxrs.ext.search.ConditionType;
 import org.apache.cxf.jaxrs.ext.search.PrimitiveStatement;
 import org.apache.cxf.jaxrs.ext.search.SearchCondition;
 import org.apache.cxf.jaxrs.ext.search.SearchContext;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -80,6 +81,8 @@ import org.wso2.carbon.identity.api.server.application.management.v1.core.functi
 import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.application.inbound.oauth2.OAuthInboundFunctions;
 import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.application.inbound.passive.sts.PassiveSTSInboundFunctions;
 import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.application.inbound.saml.SAMLInboundFunctions;
+import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.application.moderator.UpdateApplicationPatchModelUsingUITemplate;
+import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.application.moderator.UpdateSAML2ConfigurationUsingUITemplate;
 import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.application.provisioning.BuildProvisioningConfiguration;
 import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.application.provisioning.UpdateProvisioningConfiguration;
 import org.wso2.carbon.identity.api.server.application.management.v1.core.functions.template.ApplicationTemplateApiModelToTemplate;
@@ -129,6 +132,8 @@ import org.wso2.carbon.identity.cors.mgt.core.constant.ErrorMessages;
 import org.wso2.carbon.identity.cors.mgt.core.exception.CORSManagementServiceClientException;
 import org.wso2.carbon.identity.cors.mgt.core.exception.CORSManagementServiceException;
 import org.wso2.carbon.identity.cors.mgt.core.model.CORSOrigin;
+import org.wso2.carbon.identity.extension.mgt.ExtensionManager;
+import org.wso2.carbon.identity.extension.mgt.exception.ExtensionManagementException;
 import org.wso2.carbon.identity.oauth.dao.OAuthAppDO;
 import org.wso2.carbon.identity.role.v2.mgt.core.RoleConstants;
 import org.wso2.carbon.identity.sso.saml.dto.SAMLSSOServiceProviderDTO;
@@ -880,6 +885,16 @@ public class ServerApplicationManagementService {
         }
 
         if (applicationPatchModel != null) {
+            JSONObject uiTemplate = null;
+
+            try {
+                uiTemplate = getExtensionManagementService().getExtensionTemplate("applications",
+                        appToUpdate.getTemplateId());
+            } catch (ExtensionManagementException e) {
+                // Ignore the error
+            }
+
+            new UpdateApplicationPatchModelUsingUITemplate(appToUpdate).apply(applicationPatchModel, uiTemplate);
             new UpdateServiceProvider().apply(appToUpdate, applicationPatchModel);
         }
 
@@ -1773,6 +1788,20 @@ public class ServerApplicationManagementService {
         // We need a cloned copy of the Service Provider so that we changes we do not make cache dirty.
         ServiceProvider application = cloneApplication(applicationId);
 
+        JSONObject uiTemplate = null;
+
+        try {
+            uiTemplate = getExtensionManagementService().getExtensionTemplate("applications",
+                    application.getTemplateId());
+        } catch (ExtensionManagementException e) {
+            // Ignore the error
+        }
+
+        if (inboundApiModel.getClass() == SAML2Configuration.class) {
+            new UpdateSAML2ConfigurationUsingUITemplate(application).apply((SAML2Configuration) inboundApiModel,
+                    uiTemplate);
+        }
+
         // Update the service provider with the inbound configuration.
         InboundProtocolConfigurationDTO inboundDTO = getInboundDTO.apply(application, inboundApiModel);
         try {
@@ -1858,6 +1887,11 @@ public class ServerApplicationManagementService {
     private ApplicationManagementService getApplicationManagementService() {
 
         return ApplicationManagementServiceHolder.getApplicationManagementService();
+    }
+
+    private ExtensionManager getExtensionManagementService() {
+
+        return ApplicationManagementServiceHolder.getExtensionManagementService();
     }
 
     private AuthorizedAPIManagementService getAuthorizedAPIManagementService() {

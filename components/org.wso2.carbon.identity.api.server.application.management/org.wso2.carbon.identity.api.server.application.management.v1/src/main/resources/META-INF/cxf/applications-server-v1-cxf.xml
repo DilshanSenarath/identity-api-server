@@ -63,6 +63,10 @@
           class="org.wso2.carbon.identity.api.server.application.management.common.ApplicationManagementServiceHolder">
         <property name="orgApplicationManager" ref="orgApplicationManagerServiceFactoryBean"/>
     </bean>
+    <bean id="extensionManagementServiceHolderBean"
+          class="org.wso2.carbon.identity.api.server.application.management.common.ApplicationManagementServiceHolder">
+        <property name="extensionManagementService" ref="extensionManagementServiceFactoryBean"/>
+    </bean>
 
     <bean id="applicationManagementServiceFactoryBean"
           class="org.wso2.carbon.identity.api.server.application.management.common.factory.ApplicationManagementOSGiServiceFactory"/>
@@ -85,4 +89,6 @@
           class="org.wso2.carbon.identity.api.server.application.management.common.factory.APIResourceMgtOSGiServiceFactory"/>
     <bean id="orgApplicationManagerServiceFactoryBean"
           class="org.wso2.carbon.identity.api.server.application.management.common.factory.OrgApplicationManagerOSGiServiceFactory"/>
+    <bean id="extensionManagementServiceFactoryBean"
+          class="org.wso2.carbon.identity.api.server.application.management.common.factory.ExtensionMgtOSGIServiceFactory"/>
 </beans>

@@ -19,6 +19,7 @@ import org.wso2.carbon.identity.api.resource.mgt.APIResourceManager;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.application.mgt.AuthorizedAPIManagementService;
 import org.wso2.carbon.identity.cors.mgt.core.CORSManagementService;
+import org.wso2.carbon.identity.extension.mgt.ExtensionManager;
 import org.wso2.carbon.identity.oauth.OAuthAdminServiceImpl;
 import org.wso2.carbon.identity.oauth.config.OAuthServerConfiguration;
 import org.wso2.carbon.identity.organization.management.application.OrgApplicationManager;
@@ -43,6 +44,7 @@ public class ApplicationManagementServiceHolder {
     private static APIResourceManager apiResourceManager;
     private static AuthorizedAPIManagementService authorizedAPIManagementService;
     private static OrgApplicationManager orgApplicationManager;
+    private static ExtensionManager extensionManagementService;
 
     public static ApplicationManagementService getApplicationManagementService() {
 
@@ -193,5 +195,25 @@ public class ApplicationManagementServiceHolder {
     public static void setOrgApplicationManager(OrgApplicationManager orgApplicationManager) {
 
         ApplicationManagementServiceHolder.orgApplicationManager = orgApplicationManager;
+    }
+
+    /**
+     * Get OrgApplicationManager OSGi service.
+     *
+     * @return OrgApplicationManager.
+     */
+    public static ExtensionManager getExtensionManagementService() {
+
+        return extensionManagementService;
+    }
+
+    /**
+     * Set OrgApplicationManager OSGi service.
+     *
+     * @param extensionManagementService OrgApplicationManager.
+     */
+    public static void setExtensionManagementService(ExtensionManager extensionManagementService) {
+
+        ApplicationManagementServiceHolder.extensionManagementService = extensionManagementService;
     }
 }

@@ -46,6 +46,7 @@ public class AdvancedApplicationConfiguration  {
     private Boolean enableAuthorization;
     private Boolean fragment;
     private Boolean enableAPIBasedAuthentication;
+    private Boolean allowIDPManagedApplicationProperties;
     private AdvancedApplicationConfigurationAttestationMetaData attestationMetaData;
     private List<AdditionalSpProperty> additionalSpProperties = null;
     private Boolean useExternalConsentPage;
@@ -240,6 +241,25 @@ public class AdvancedApplicationConfiguration  {
     }
 
     /**
+     * Decides whether the application has properties managed by IDP.
+     **/
+    public AdvancedApplicationConfiguration allowIDPManagedApplicationProperties(Boolean allowIDPManagedApplicationProperties) {
+
+        this.allowIDPManagedApplicationProperties = allowIDPManagedApplicationProperties;
+        return this;
+    }
+
+    @ApiModelProperty(example = "false", value = "Decides whether the application has properties managed by IDP.")
+    @JsonProperty("allowIDPManagedApplicationProperties")
+    @Valid
+    public Boolean getAllowIDPManagedApplicationProperties() {
+        return allowIDPManagedApplicationProperties;
+    }
+    public void setAllowIDPManagedApplicationProperties(Boolean allowIDPManagedApplicationProperties) {
+        this.allowIDPManagedApplicationProperties = allowIDPManagedApplicationProperties;
+    }
+
+    /**
     **/
     public AdvancedApplicationConfiguration attestationMetaData(AdvancedApplicationConfigurationAttestationMetaData attestationMetaData) {
 
@@ -305,13 +325,14 @@ public class AdvancedApplicationConfiguration  {
             Objects.equals(this.enableAuthorization, advancedApplicationConfiguration.enableAuthorization) &&
             Objects.equals(this.fragment, advancedApplicationConfiguration.fragment) &&
             Objects.equals(this.enableAPIBasedAuthentication, advancedApplicationConfiguration.enableAPIBasedAuthentication) &&
+            Objects.equals(this.allowIDPManagedApplicationProperties, advancedApplicationConfiguration.allowIDPManagedApplicationProperties) &&
             Objects.equals(this.attestationMetaData, advancedApplicationConfiguration.attestationMetaData) &&
             Objects.equals(this.additionalSpProperties, advancedApplicationConfiguration.additionalSpProperties);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(saas, discoverableByEndUsers, certificate, skipLoginConsent, skipLogoutConsent, useExternalConsentPage, returnAuthenticatedIdpList, enableAuthorization, fragment, enableAPIBasedAuthentication, attestationMetaData, additionalSpProperties);
+        return Objects.hash(saas, discoverableByEndUsers, certificate, skipLoginConsent, skipLogoutConsent, useExternalConsentPage, returnAuthenticatedIdpList, enableAuthorization, fragment, enableAPIBasedAuthentication, allowIDPManagedApplicationProperties, attestationMetaData, additionalSpProperties);
     }
 
     @Override
@@ -330,6 +351,7 @@ public class AdvancedApplicationConfiguration  {
         sb.append("    enableAuthorization: ").append(toIndentedString(enableAuthorization)).append("\n");
         sb.append("    fragment: ").append(toIndentedString(fragment)).append("\n");
         sb.append("    enableAPIBasedAuthentication: ").append(toIndentedString(enableAPIBasedAuthentication)).append("\n");
+        sb.append("    allowIDPManagedApplicationProperties: ").append(toIndentedString(allowIDPManagedApplicationProperties)).append("\n");
         sb.append("    attestationMetaData: ").append(toIndentedString(attestationMetaData)).append("\n");
         sb.append("    additionalSpProperties: ").append(toIndentedString(additionalSpProperties)).append("\n");
         sb.append("}");

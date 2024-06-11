@@ -24,6 +24,7 @@ import org.wso2.carbon.identity.api.server.common.error.APIError;
 import org.wso2.carbon.identity.api.server.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
+import org.wso2.carbon.identity.application.common.model.ServiceProviderProperty;
 import org.wso2.carbon.identity.application.mgt.ApplicationConstants;
 import org.wso2.carbon.identity.application.mgt.ApplicationMgtUtil;
 
@@ -32,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -236,5 +238,33 @@ public class Utils {
         }
 
         return ApplicationListItem.AccessEnum.WRITE;
+    }
+
+    public static boolean isApplicationManagedByIDP(ServiceProviderProperty[] applicationProperties) {
+        boolean isApplicationManagedByIDP = false;
+
+        if (applicationProperties != null) {
+            ServiceProviderProperty[] filteredProperties = Arrays.stream(
+                    applicationProperties).filter(property -> property.getName()
+                    .equals("allowIDPManagedApplicationProperties")).toArray(ServiceProviderProperty[]::new);
+            if (filteredProperties.length > 0) {
+                isApplicationManagedByIDP = Boolean.parseBoolean(filteredProperties[0].getValue());
+            }
+        }
+
+        return isApplicationManagedByIDP;
+    }
+
+    public static boolean isValidToBeApplicationManagedByIDP(String applicationCategory) {
+        boolean isValidToBeApplicationManagedByIDP = false;
+
+        if (applicationCategory != null) {
+            String[] tempSupportedApplicationCategoryList = { "SSO-INTEGRATION" };
+            if (Arrays.asList(tempSupportedApplicationCategoryList).contains(applicationCategory)) {
+                isValidToBeApplicationManagedByIDP = true;
+            }
+        }
+
+        return isValidToBeApplicationManagedByIDP;
     }
 }

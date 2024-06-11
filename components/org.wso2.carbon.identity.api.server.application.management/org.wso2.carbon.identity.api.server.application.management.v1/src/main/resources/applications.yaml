@@ -3102,6 +3102,10 @@ components:
           type: boolean
           description: Decides whether API Based Authentication is enabled for this application.
           example: false
+        allowIDPManagedApplicationProperties:
+          type: boolean
+          description: Decides whether the application has properties managed by IDP.
+          example: false
         attestationMetaData:
           type: object
           description: Decides the client attestation meta data for the application.
